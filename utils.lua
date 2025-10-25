@@ -1,6 +1,5 @@
 local M = {}
 
----
 --- 将颜色字符串转为 RGB 数组
 --- @param color string # 形如 "#RRGGBB" 的颜色字符串
 --- @return table # {r, g, b}
@@ -13,7 +12,6 @@ local function rgb(color)
 	}
 end
 
----
 --- 前景色与背景色混合，返回混合后的 HEX 颜色
 --- @param foreground string # 前景色 HEX
 --- @param alpha number|string # 混合比例 (0~1) 或 16进制字符串
@@ -28,7 +26,6 @@ function M.blend(foreground, alpha, background)
 	return string.format("#%02x%02x%02x", blendChannel(1), blendChannel(2), blendChannel(3))
 end
 
----
 --- 判断主题类型（深色/浅色），并计算对比度等信息
 --- @param bg_color string # 背景色 HEX
 --- @param fg_color string # 前景色 HEX
@@ -61,7 +58,6 @@ function M.detect_theme_type(bg_color, fg_color)
 	}
 end
 
----
 --- 获取当前操作系统类型，支持分发不同逻辑
 --- @param handlers table|nil # 可选，系统分发表
 --- @return string|unknown # 返回系统类型或分发结果
@@ -88,6 +84,26 @@ function M.get_os_type(handlers)
 	end
 
 	return sys
+end
+
+
+--- 判断可执行文件是否存在（跨平台，纯Lua实现）
+--- @param cmd string # 可执行文件名（不带路径）
+--- @return boolean # 是否存在
+function M.exists(cmd)
+	local path_sep = package.config:sub(1, 1)
+	local wezterm = require("wezterm")
+	local exe = cmd .. (wezterm.target_triple:find("windows") and ".exe" or "")
+	local path_env = os.getenv("PATH") or ""
+	for dir in string.gmatch(path_env, "([^" .. (path_sep == "\\" and ";" or ":") .. "]+)") do
+		local full = dir .. path_sep .. exe
+		local f = io.open(full, "rb")
+		if f then
+			f:close()
+			return true
+		end
+	end
+	return false
 end
 
 return M

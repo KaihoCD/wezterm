@@ -29,7 +29,7 @@ return {
 				}),
 			},
 
-			-- normal-intensity-and-italic
+			-- Normal-intensity-and-italic
 			{
 				intensity = "Normal",
 				italic = true,
@@ -40,7 +40,7 @@ return {
 				}),
 			},
 
-			-- half-intensity-and-italic
+			-- Half-intensity-and-italic
 			{
 				intensity = "Half",
 				italic = true,
@@ -50,7 +50,7 @@ return {
 				}),
 			},
 
-			-- half-intensity-and-not-italic
+			-- Half-intensity-and-not-italic
 			{
 				intensity = "Half",
 				italic = false,

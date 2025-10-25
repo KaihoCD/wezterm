@@ -25,25 +25,39 @@ local function gen_config(bg, fg)
 	return { bg_color = bg, fg_color = fg, intensity = "Bold" }
 end
 
-local colors = gen_theme_palette(_G.configs.themes)
+--- 生成 wezterm 颜色相关配置对象
+--- @param theme_name string 主题名
+--- @return {color_scheme: string, window_frame: table, colors: table}
+local function make_color_config(theme_name)
+	local colors = gen_theme_palette(theme_name)
+	return {
+		color_scheme = theme_name,
+		window_frame = {
+			inactive_titlebar_bg = colors.dark_bg,
+			active_titlebar_bg = colors.dark_bg,
+		},
+		colors = {
+			tab_bar = {
+				active_tab = gen_config(colors.bg, colors.fg),
+				inactive_tab = gen_config(colors.dark_bg, colors.light_fg),
+				inactive_tab_edge = colors.light_fg,
+				inactive_tab_hover = gen_config(colors.bg, colors.light_fg),
+				new_tab = gen_config(colors.dark_bg, colors.light_fg),
+				new_tab_hover = gen_config(colors.dark_bg, colors.fg),
+			},
+		},
+	}
+end
 
 return {
-    colors = colors,
-    setup_colors = function (wezterm_config)
-        wezterm_config.color_scheme = _G.configs.themes
-        wezterm_config.window_frame = {
-            inactive_titlebar_bg = colors.dark_bg,
-            active_titlebar_bg = colors.dark_bg,
-        }
-        wezterm_config.colors = {
-            tab_bar = {
-                active_tab = gen_config(colors.bg, colors.fg),
-                inactive_tab = gen_config(utils.blend(colors.dark_bg, 0.5, colors.bg), colors.light_fg),
-                inactive_tab_edge = colors.light_fg,
-                inactive_tab_hover = gen_config(colors.bg, colors.light_fg),
-                new_tab = gen_config(colors.dark_bg, colors.light_fg),
-                new_tab_hover = gen_config(colors.dark_bg, colors.fg),
-            },
-        }
-    end
+	get_colors = function()
+		return gen_theme_palette(_G.configs.themes)
+	end,
+	setup_colors = function(wezterm_config)
+		local conf = make_color_config(_G.configs.themes)
+		wezterm_config.color_scheme = conf.color_scheme
+		wezterm_config.window_frame = conf.window_frame
+		wezterm_config.colors = conf.colors
+	end,
+	make_color_config = make_color_config,
 }
