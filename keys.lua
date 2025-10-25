@@ -12,29 +12,49 @@ end
 
 -- 判断可执行文件是否存在
 local function exists(cmd)
-    local check = "which " .. cmd .. " >/dev/null 2>&1"
-    if wezterm.target_triple:find("windows") then
-        check = "where " .. cmd .. " >nul 2>nul"
-    end
-    local ok = os.execute(check)
-    return ok == 0 or ok == true
+	-- 优先用 LuaFileSystem 检查 PATH
+	local ok, lfs = pcall(require, "lfs")
+	if ok and lfs and type(lfs.attributes) == "function" then
+		local path_sep = package.config:sub(1, 1)
+		local path_env = os.getenv("PATH") or ""
+		for dir in string.gmatch(path_env, "([^" .. (path_sep == "\\" and ";" or ":") .. "]+)") do
+			local full = dir .. path_sep .. cmd .. (wezterm.target_triple:find("windows") and ".exe" or "")
+			if lfs.attributes(full, "mode") then
+				return true
+			end
+		end
+		return false
+	end
+	-- fallback: 直接返回 true，避免 GUI 闪烁
+	return true
+end
+
+local function get_cwd()
+	return utils.get_os_type({
+		windows = function()
+			return (os.getenv("USERPROFILE") or "") .. "\\.config\\wezterm"
+		end,
+		default = function()
+			return (os.getenv("HOME") or "") .. "/.config/wezterm"
+		end,
+	})
 end
 
 local function get_editor()
-    if exists("nvim") then
-        return { "nvim", "." }
-    elseif exists("vim") then
-        return { "vim", "." }
-    elseif exists("code") then
-        return { "code", "." }
-    else
-        return utils.get_os_type({
-            macos = { "open", "." },
-            windows = { "explorer", "." },
-            linux = { "xdg-open", "." },
-            default = { "echo", "No suitable editor found." }
-        })
-    end
+	if exists("nvim") then
+		return { "nvim", "." }
+	elseif exists("vim") then
+		return { "vim", "." }
+	elseif exists("code") then
+		return { "code", "." }
+	else
+		return utils.get_os_type({
+			macos = { "open", "." },
+			windows = { "explorer", "." },
+			linux = { "xdg-open", "." },
+			default = { "echo", "No suitable editor found." },
+		})
+	end
 end
 
 local keys = {
@@ -61,11 +81,16 @@ local keys = {
 		"e",
 		"LEADER",
 		act.SpawnCommandInNewTab({
-			cwd = os.getenv("HOME") .. "/.config/wezterm",
+			cwd = get_cwd(),
 			args = get_editor(),
 		})
 	),
 }
+
+print({
+	cwd = get_cwd(),
+	args = get_editor(),
+})
 
 for i = 1, 9 do
 	table.insert(keys, map(tostring(i), "LEADER", act.ActivateTab(i - 1)))
