@@ -4,7 +4,7 @@ return {
 	themes = "Tokyo Night",
 	font_size = get_os_type({
 		macos = 14,
-		windows = 12,
+		windows = 10,
 		linux = 12,
 	}),
 	fonts = {
