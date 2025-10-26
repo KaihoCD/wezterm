@@ -86,24 +86,4 @@ function M.get_os_type(handlers)
 	return sys
 end
 
-
---- 判断可执行文件是否存在（跨平台，纯Lua实现）
---- @param cmd string # 可执行文件名（不带路径）
---- @return boolean # 是否存在
-function M.exists(cmd)
-	local path_sep = package.config:sub(1, 1)
-	local wezterm = require("wezterm")
-	local exe = cmd .. (wezterm.target_triple:find("windows") and ".exe" or "")
-	local path_env = os.getenv("PATH") or ""
-	for dir in string.gmatch(path_env, "([^" .. (path_sep == "\\" and ";" or ":") .. "]+)") do
-		local full = dir .. path_sep .. exe
-		local f = io.open(full, "rb")
-		if f then
-			f:close()
-			return true
-		end
-	end
-	return false
-end
-
 return M

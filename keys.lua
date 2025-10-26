@@ -3,7 +3,6 @@ local utils = require("utils")
 local event_names = require("events").event_names
 local act = wezterm.action
 
-
 local function map(key, mods, action)
 	return {
 		key = key,
@@ -21,23 +20,6 @@ local function get_cwd()
 			return (os.getenv("HOME") or "") .. "/.config/wezterm"
 		end,
 	})
-end
-
-local function get_editor()
-	if utils.exists("nvim") then
-		return { "nvim", "." }
-	elseif utils.exists("vim") then
-		return { "vim", "." }
-	elseif utils.exists("code") then
-		return { "code", "." }
-	else
-		return utils.get_os_type({
-			macos = { "open", "." },
-			windows = { "explorer", "." },
-			linux = { "xdg-open", "." },
-			default = { "echo", "No suitable editor found." },
-		})
-	end
 end
 
 local keys = {
@@ -73,15 +55,8 @@ local keys = {
 	map("-", "LEADER", act.DecreaseFontSize),
 	-- Trigger theme picker
 	map("T", "LEADER", act.EmitEvent(event_names.TRIGGER_THEME_PICKER)),
-	-- Open or edit configs
-	map(
-		"e",
-		"LEADER",
-		act.SpawnCommandInNewTab({
-			cwd = get_cwd(),
-			args = get_editor(),
-		})
-	),
+	-- Goto configs
+	map("e", "LEADER", act.SpawnCommandInNewTab({ cwd = get_cwd() })),
 }
 
 for i = 1, 9 do
