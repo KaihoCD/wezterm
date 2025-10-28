@@ -1,4 +1,5 @@
 local wezterm = require("wezterm")
+local utils = require("utils")
 
 local M = {}
 
@@ -21,40 +22,33 @@ function M.is_idle_shell(process_name)
 	return false
 end
 
--- 获取当前设备名称
-function M.get_device_name(icons)
-	local hostname = wezterm.hostname()
-	if not hostname or type(hostname) ~= "string" then
-		return icons.device_icon .. " Mysterious Guest"
-	end
-	hostname = hostname:gsub("%.local$", "")
-	return hostname
+-- 获取当前用户
+function M.get_current_user()
+	local user = os.getenv("USER") -- macOS / Linux
+		or os.getenv("LOGNAME")
+		or os.getenv("USERNAME") -- Windows
+	return user or nil
 end
 
--- 获取当前工作目录名称
-function M.get_current_working_dir(pane)
-	if not pane then
+-- 从 file:// URI 提取最后一级目录名（PaneInformation）
+function M.extract_dir_from_uri(cwd_uri)
+	if not cwd_uri then
 		return ""
 	end
 
-	local ok, res = pcall(function()
-		return pane:get_current_working_dir()
-	end)
-
-	if not ok or not res or not res.path then
-		return ""
+	if type(cwd_uri) ~= "string" then
+		cwd_uri = tostring(cwd_uri or "")
 	end
 
-	local cwd = res.path or ""
-	cwd = cwd:gsub("/$", "")
-	local home = os.getenv("HOME")
-	if home and cwd == home then
-		return "~"
+	local path = cwd_uri:match("file://[^/]+(/.+)")
+	if path then
+		local home = os.getenv("HOME")
+		if home and path:sub(1, #home) == home then
+			path = "~" .. path:sub(#home + 1)
+		end
+		return path:match("([^/]+)$") or path
 	end
-	if home and cwd:sub(1, #home + 1) == home .. "/" then
-		cwd = "~" .. cwd:sub(#home + 1)
-	end
-	return cwd:match("([^/]+)$") or cwd
+	return ""
 end
 
 -- 判断是否是最后一个tab的最后一个pane
@@ -63,6 +57,50 @@ function M.is_final_pane(window)
 	local current_tab = window:active_tab()
 	local panes = current_tab:panes()
 	return (#tabs == 1) and (#panes == 1)
+end
+
+-- 获取 node 版本
+function M.get_node_version()
+	local cmds = utils.get_os_type({
+		macos = { "/bin/zsh", "-ic", "node -v" },
+		linux = { "/bin/bash", "-ic", "node -v" },
+		windows = { "pwsh", "-Command", "node -v" },
+		default = { "node", "-v" },
+	})
+
+	local ok, out = wezterm.run_child_process(cmds)
+	if ok and out then
+		return out:gsub("[\r\n]+", "")
+	end
+
+	return nil
+end
+
+-- 获取当前项目所使用的包管理器
+function M.get_project_package_manager(pane)
+	if not pane then
+		return nil
+	end
+	local cwd_uri = pane:get_current_working_dir()
+	local cwd = cwd_uri and cwd_uri.file_path
+	if not cwd then
+		return nil
+	end
+
+	local lock_files = {
+		{ "package-lock.json", "npm" },
+		{ "yarn.lock", "yarn" },
+		{ "pnpm-lock.yaml", "pnpm" },
+		{ "bun.lockb", "bun" },
+	}
+
+	for _, lock in ipairs(lock_files) do
+		local ok = wezterm.run_child_process({ "test", "-e", cwd .. "/" .. lock[1] })
+		if ok then
+			return lock[2]
+		end
+	end
+	return nil
 end
 
 return M
