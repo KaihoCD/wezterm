@@ -25,12 +25,12 @@ end
 local keys = {
 	-- Copy and paste
 	utils.get_os_type({
-		macos = map("c", "SUPER", act.CopyTo("Clipboard")),
-		default = map("c", "CTRL", act.CopyTo("Clipboard")),
+		macos = map("c", "SUPER|SHIFT", act.CopyTo("Clipboard")),
+		default = map("c", "CTRL|SHIFT", act.CopyTo("Clipboard")),
 	}),
 	utils.get_os_type({
-		macos = map("v", "SUPER", act.PasteFrom("Clipboard")),
-		default = map("v", "CTRL", act.PasteFrom("Clipboard")),
+		macos = map("v", "SUPER|SHIFT", act.PasteFrom("Clipboard")),
+		default = map("v", "CTRL|SHIFT", act.PasteFrom("Clipboard")),
 	}),
 	-- Modes
 	map("y", "LEADER", act.ActivateCopyMode),
