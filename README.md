@@ -1,26 +1,49 @@
 # 🌈 WezTerm 终端配置
 
-> 高效 · 美观 · 多平台 · 极致定制
+A clean, modern, and cross-platform WezTerm configuration
+for developers who want great looks,
+productivity, and sensible defaults.
 
 ---
 
-## 简介
-本仓库是个人 WezTerm 终端配置，专为开发者和效率控打造，兼容 macOS、Windows、Linux，支持中英文字体自动切换，集成多种实用快捷键和美化主题。
+## ✨ Features
+
+- 🎨 **Beautiful Themes**:
+  Tokyo Night by default, with dynamic color palette and tab highlights.
+- 📝 **Smart Fonts**:
+  JetBrainsMono Nerd Font as main font,
+  with automatic fallback for CJK and emoji per OS.
+- 💻 **Cross-Platform**:
+  Works out-of-the-box on macOS, Linux, and Windows.
+- ⌨️ **Intuitive Keybindings**:
+  Vim-like navigation, pane/tab management, and clipboard shortcuts.
+- 🪟 **Minimal UI**:
+  Centered content, slim padding, and distraction-free window decorations.
+- 📊 **Status Bar & Tabs**:
+  Shows current directory, user, and process icons with clear tab indices.
+- ⚙️ **One-Config Setup**:
+  All settings modularized for easy tweaking and extension.
 
 ---
 
 ## 主要特性
 
-- 🟦 **主题美化**：默认 Tokyo Night，自动生成衍生色，tab 栏高亮美观
-- 🟩 **智能字体**：JetBrainsMono Nerd Font 主字体，自动根据系统切换中文/emoji/符号字体
-- 🟪 **多平台兼容**：macOS / Windows / Linux 一套配置全搞定
-- 🟫 **快捷菜单**：Leader + e 一键打开配置目录，自动选择最佳编辑器（nvim/vim/code/open/explorer）
-- 🟥 **Vim-like 操作**：Leader 键、Pane/Tab 快速切换、分屏、关闭等
-- 🟨 **Tab/Pane 管理**：Leader + 数字切换标签，Leader + hjkl 切换分屏
-- 🟧 **搜索/复制模式**：Leader + f 搜索，Leader + y 进入复制模式
-- 🟦 **字体大小调节**：Leader + =/-/0 快速调整字体大小
-- 🟩 **状态栏美化**：显示当前目录、设备名，tab 栏显示进程图标和序号
-- 🟪 **禁用原生按键**：只保留自定义快捷键，极致个性化
+| Shortcut  | Action                      |
+| --------- | --------------------------- |
+| 🅻 + hjkl  | Move between panes          |
+| 🅻 + H/L   | Switch tabs                 |
+| 🅻 + [1-9] | Go to tab N                 |
+| 🅻 + t     | New tab                     |
+| 🅻 + v/s   | Split pane (vertical/horiz) |
+| 🅻 + w     | Close pane/tab              |
+| 🅻 + y     | Copy mode                   |
+| 🅻 + p     | Paste clipboard             |
+| 🅻 + f     | Search                      |
+| 🅻 + e     | Open config folder          |
+| 🅻 + =/-/0 | Font size + / - / reset     |
+| 🅻 + T     | Theme picker                |
+
+_🅻 = Leader key (<kbd>Shift</kbd> + <kbd>Space</kbd>)_
 
 ---
 
