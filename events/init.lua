@@ -18,12 +18,13 @@ local icons = {
 		nvim = "",
 		vim = "",
 		cmd = "",
-		nu = "",
+		nu = "󰧚",
 		pwsh = "󰨊",
+		powershell = "󰨊",
 		wslhost = "󰌽",
 		fuzzy = "",
 		deno = "",
-		default = "",
+    default = "󰱨",
 	},
 	-- stylua: ignore
 	tab_sup_index = { "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹" },
@@ -45,26 +46,10 @@ local events = {
 	[EVENTS.UPDATE_RIGHT_STATUS] = function(window, pane)
 		local user = utils.get_current_user()
 		local inner_colors = colors.get_colors()
-		local pkg_manager = utils.get_project_package_manager(pane)
-		local node_version = utils.get_node_version()
 
 		local status = {
 			{ Background = { Color = inner_colors.dark_bg } },
 		}
-
-		if pkg_manager then
-			table.insert(status, { Foreground = { Color = inner_colors.fg } })
-			table.insert(status, { Text = "  " .. icons.pkg_manager[pkg_manager] })
-			table.insert(status, { Foreground = { Color = inner_colors.light_fg } })
-			table.insert(status, { Text = "  " .. pkg_manager.. "  "  })
-		end
-
-		if node_version then
-			table.insert(status, { Foreground = { Color = inner_colors.fg } })
-			table.insert(status, { Text = "  " .. icons.exec_icons.node })
-			table.insert(status, { Foreground = { Color = inner_colors.light_fg } })
-			table.insert(status, { Text = "  " .. node_version .. "  " })
-		end
 
 		if user then
 			table.insert(status, { Foreground = { Color = inner_colors.fg } })

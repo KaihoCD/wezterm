@@ -16,4 +16,9 @@ return {
 			linux = { "WenQuanYi Micro Hei", "Symbols Nerd Font" },
 		}),
 	},
+	shell = get_os_type({
+		macos = { "zsh", "-l" },
+		windows = { "pwsh", "-l" },
+		linux = { "zsh", "-l" },
+	}),
 }

@@ -5,8 +5,8 @@ return {
 		local fonts = _G.configs.fonts --[[ @type table ]]
 		wezterm_config.font_size = _G.configs.font_size
 		wezterm_config.font = wezterm.font_with_fallback({
-			{ family = fonts.main, weight = "DemiBold" },
-			{ family = fonts.comment, weight = "DemiBold" },
+			{ family = fonts.main, weight = "Regular" },
+			{ family = fonts.comment, weight = "Regular" },
 			table.unpack(fonts.fallback),
 		})
 		wezterm_config.font_rules = {
@@ -14,7 +14,7 @@ return {
 				intensity = "Bold",
 				italic = false,
 				font = wezterm.font_with_fallback({
-					{ family = fonts.main, weight = "ExtraBold" },
+					{ family = fonts.main, weight = "Bold" },
 					table.unpack(fonts.fallback),
 				}),
 			},
@@ -24,7 +24,7 @@ return {
 				intensity = "Bold",
 				italic = true,
 				font = wezterm.font_with_fallback({
-					{ family = fonts.main, weight = "ExtraBold", italic = true },
+					{ family = fonts.main, weight = "Bold", italic = true },
 					table.unpack(fonts.fallback),
 				}),
 			},
@@ -35,7 +35,7 @@ return {
 				italic = true,
 				font = wezterm.font_with_fallback({
 					{ family = fonts.comment, weight = "Regular", italic = true },
-					{ family = fonts.main, weight = "ExtraBold", italic = true },
+					{ family = fonts.main, weight = "Bold", italic = true },
 					table.unpack(fonts.fallback),
 				}),
 			},
