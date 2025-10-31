@@ -1,4 +1,6 @@
-_G.configs = require('settings')
+-- load configs
+require('configs')
+
 local wezterm = require('wezterm')
 
 local config = wezterm.config_builder()

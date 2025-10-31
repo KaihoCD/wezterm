@@ -2,6 +2,7 @@ local wezterm = require('wezterm')
 local utils = require('utils')
 local event_names = require('events').event_names
 local act = wezterm.action
+local configs = require('configs')
 
 local function map(key, mods, action)
     return {
@@ -57,6 +58,8 @@ local keys = {
     map('T', 'LEADER', act.EmitEvent(event_names.TRIGGER_THEME_PICKER)),
     -- Goto configs
     map('e', 'LEADER', act.SpawnCommandInNewTab({ cwd = get_cwd() })),
+    -- Reset cache
+    map('R', 'LEADER', act.EmitEvent(event_names.RESET_CACHE)),
 }
 
 for i = 1, 9 do

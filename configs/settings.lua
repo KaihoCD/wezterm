@@ -1,7 +1,7 @@
 local get_os_type = require('utils').get_os_type
 
 return {
-    themes = 'Tokyo Night',
+    themes = 'Default Dark (base16)',
     font_size = get_os_type({
         macos = 14,
         windows = 10,

@@ -2,6 +2,7 @@ local wezterm = require('wezterm')
 local colors = require('colors')
 local act = wezterm.action
 local utils = require('events.utils')
+local configs = require('configs')
 
 local icons = {
     user_icon = '󰊠',
@@ -33,6 +34,7 @@ local EVENTS = {
     UPDATE_THEME = 'update-theme',
     TRIGGER_THEME_PICKER = 'trigger-theme-picker',
     CLOSE_CURRENT_PANE = 'close-current-pane',
+    RESET_CACHE = 'reset-cache',
 }
 
 local events = {
@@ -72,6 +74,7 @@ local events = {
         }
     end,
     [EVENTS.UPDATE_THEME] = function(window, pane)
+        print('[wezterm] Theme has been reset: ' .. _G.configs.themes)
         window:set_config_overrides(require('colors').make_color_config(_G.configs.themes))
         wezterm.emit(EVENTS.UPDATE_RIGHT_STATUS, window, pane)
     end,
@@ -90,6 +93,8 @@ local events = {
                 action = wezterm.action_callback(function(inner_window, _, _, label)
                     if label then
                         _G.configs.themes = label
+                        -- save to cache
+                        configs.save_cache('themes', label)
                         wezterm.emit(EVENTS.UPDATE_THEME, inner_window)
                     end
                 end),
@@ -120,6 +125,11 @@ local events = {
                 pane
             )
         end
+    end,
+    [EVENTS.RESET_CACHE] = function(window)
+        configs.clear_cache()
+        configs.setup_config()
+        wezterm.emit(EVENTS.UPDATE_THEME, window)
     end,
 }
 
